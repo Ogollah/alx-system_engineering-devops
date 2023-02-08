@@ -1,2 +1,2 @@
 #!/bin/bash
-mv -name '[A-Z]*' /tmp/u
+mv /tmp/sym/[A-Z]* /tmp/u
