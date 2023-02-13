@@ -4,3 +4,4 @@
 ## 2. Let's display a file: cat /etc/passwd Displays the content of /etc/passwd file line by line
 ## 3. What about 2?: cat /etc/passwd /etc/hosts Displays contents of the two files
 ## 4. Last lines of a file: tail -n 10 /etc/passwd Displays the last 10 lines of the file
+## 5. I'd prefer the first ones actually: head -n 10 /etc/passwd Displays first 10 lines of the file
