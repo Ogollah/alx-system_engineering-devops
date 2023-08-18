@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-
 # Function to handle the incoming data
+
 handle_data() {
   while IFS= read -r line; do
     echo "$line"
@@ -8,4 +8,5 @@ handle_data() {
 }
 
 # Listen on port 98 and handle incoming data
+
 nc -l -p 98 | handle_data
