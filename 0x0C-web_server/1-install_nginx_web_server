@@ -19,4 +19,4 @@ server {
 }
 EOF
 
-service nginx restart
+sudo service nginx restart
