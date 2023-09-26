@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Install Nginx
 
-apt-get -y update
-apt-get install nginx -y
+sudo apt-get -y update
+sudo apt-get install nginx -y
 
 mkdir -p /var/www/html
 
