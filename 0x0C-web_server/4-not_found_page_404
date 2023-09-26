@@ -1,24 +1,22 @@
 #!/usr/bin/env bash
 # set up a web server
 
-sudo apt-get update
-sudo apt-get --yes install 'nginx'
-sudo mkdir --parents '/var/www/html'
-echo 'Hello World! > '/var/www/html/index.html'
-echo 'Ceci n'\''est pas une page' > '/var/www/html/404.html'
-cat > '/etc/nginx/sites-available/default' << EOF
+sudo apt-get -y update
+sudo apt-get -y install nginx
+sudo mkdir -p /var/www/html
+echo "Ceci n'est pas une page" > /var/www/html/404.html
+cat > /etc/nginx/sites-available/default <<EOF
 server {
-	listen 80 default_server;
-	listen [::]:80 default_server ipv6only=on;
-	root /var/www/html;
-	index index.html;
-	error_page 404 /404.html;
-	location /404.html {
-		internal;
-	}
-	location /redirect_me {
-		return 301 http://example.com/;
-	}
+    listen 80 default_server;
+    listen [::]:80 default_server ipv6only=on;
+    root /var/www/html;
+    index index.html;
+    error_page 404 /404.html;
+    location /404.html {
+        internal;
+    }
 }
 EOF
+
 sudo service nginx restart
+
