@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Redirect page
+# Not found page 404
 
 sudo apt-get -y update
 
