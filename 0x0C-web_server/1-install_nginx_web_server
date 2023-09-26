@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-
 # Install Nginx
+
 apt install nginx -y
 /etc/init.d/nginx start
 
