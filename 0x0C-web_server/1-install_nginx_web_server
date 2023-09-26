@@ -1,19 +1,22 @@
 #!/usr/bin/env bash
 # Install Nginx
 
-apt install nginx -y
-/etc/init.d/nginx start
+apt-get -y update
+apt-get install nginx -y
+
+mkdir -p /var/www/html
+
+echo 'Hello World!' > /var/www/html/index.html
 
 cat > /etc/nginx/sites-available/default <<EOF
 server {
     listen 80;
     server_name _;
     location / {
-        echo "Hello World!";
+        root /var/www/html;
+        index index.html;
     }
 }
 EOF
 
-nginx -t
-/etc/init.d/nginx reload
-exit 0
+service nginx restart
