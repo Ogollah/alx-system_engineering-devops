@@ -1,9 +1,7 @@
 # Client configuration file (w/ Puppet)
 
-file { '/home/stephen/.ssh/config':
-  ensure  => file,
-  owner   => 'stephen',
-  group   => 'stephen',
-  mode    => '0600',
-  content => template('~/.ssh/school/ssh_config.erb'),
+exec { 'echo':
+  path    => 'usr/bin:/bin',
+  command => 'echo "    IdentityFile ~/.ssh/school\n    PasswordAuthentication no" >> /etc/ssh/ssh_config',
+  returns => [0,1],
 }
