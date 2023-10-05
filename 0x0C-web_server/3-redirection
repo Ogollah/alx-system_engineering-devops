@@ -5,21 +5,10 @@ sudo apt-get -y update
 
 sudo apt-get -y install nginx
 sudo mkdir -p /var/www/html
-echo 'Hello World!' > /var/www/html/index.html
+sudo sh -c 'echo "Hello World!" > /var/www/html/index.html'
 
-cat > /etc/nginx/sites-available/default <<EOF
-server {
-    listen 80;
-    server_name _;
-
-    location / {
-        root /var/www/html;
-        index index.html;
-    }
-
-    location /redirect_me {
-        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
-    }
-}
-EOF
-service nginx restart
+sudo sed -i '/server_name _;/a \
+        location /redirect_me {\n\
+                rewrite ^/redirect_me https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;\n\
+        }\n' /etc/nginx/sites-available/default
+sudo service nginx restart
