@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+# Install and configure HAProxy load balancer
+
+# Update the package list
+sudo apt-get update
+
+# Install HAProxy with automatic "yes" response to prompts
+sudo apt-get -y install haproxy
+
+# Enable HAProxy by adding 'ENABLED=1' to the /etc/default/haproxy file at line 8
+sudo sed -i "8 a\ENABLED=1\n" /etc/default/haproxy
+
+# Configure HAProxy by appending a frontend and backend configuration to /etc/haproxy/haproxy.cfg
+sudo sed -i "$ a\
+frontend load_balancer\n\
+\tbind 0.0.0.0:80\n\
+\tmode http\n\
+\tdefault_backend web_servers\n\
+\n\
+backend web_servers\n\
+\tbalance roundrobin\n\
+\tserver 91013-web-01 54.152.129.123:80\n\
+\tserver 91013-web-02 35.175.135.158:80" /etc/haproxy/haproxy.cfg
+
+# Start the HAProxy service
+sudo service haproxy restart
+
+
+# install certbot
+
+if dpkg -l | grep -q certbot; then
+    echo "Certbot is already installed."
+else
+    sudo apt install certbot
+fi
+
+# Create a certificate using Certbot
+if sudo certbot certificates | grep -q "www.hotalx.tech"; then
+  echo "Certificate for www.hotalx.tech already exists."
+else
+  echo "Certificate does not exist. Creating a new one..."
+  sudo certbot certonly --standalone -d www.hotalx.tech
+fi
+
+
+# Configure HAProxy
+# sudo vi /etc/haproxy/haproxy.cfg # or auto as below:
+
+# Configure HAProxy with ssl cert
+config="\
+
+frontend lb-01
+        bind *:80
+        mode http
+        option httplog
+        option forwardfor
+        redirect scheme https code 301 if !{ ssl_fc }
+        # default_backend backend_servers
+
+frontend lb-01-ssl
+        bind *:443 ssl crt /etc/letsencrypt/live/www.hotalx.tech/fullchain.pem
+        reqadd X-Forwarded-Proto:\ https
+        default_backend backend_servers
+
+frontend letsencrypt-frontend
+        bind *:80
+        mode http
+        option forwardfor
+        acl letsencrypt-acl path_beg -i /.well-known/acme-challenge/
+        use_backend letsencrypt-backend if letsencrypt-acl
+
+backend backend_servers
+        balance roundrobin
+        server 91013-web-01 54.152.129.123:80 check
+        server 91013-web-02 35.175.135.158:80 check
+
+backend letsencrypt-backend
+        mode http
+        server letsencrypt-server 127.0.0.1:8888
+"
+
+sudo echo "$config" | sudo tee -a /etc/haproxy/haproxy.cfg
+
+# Enable logging in HAProxy
+#sudo vi /etc/rsyslog.conf
+
+# restart service for config to take effect
+sudo service haproxy restart
