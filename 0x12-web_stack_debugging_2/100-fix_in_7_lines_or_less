@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Run software as another user 7 lines or less
+sudo pkill -f apache2
+sleep 5
+sudo chmod 777 /etc/nginx/nginx.conf
+sudo sed -i 's/80/8080/g' /etc/nginx/sites-enabled/default
+sudo -u nginx nginx
